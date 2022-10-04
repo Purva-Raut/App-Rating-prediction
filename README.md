@@ -1,23 +1,12 @@
 # App-Rating-prediction
-DESCRIPTION
 
-Objective: Make a model to predict the app rating, with other information about the app provided.
+Objective: App ratings are always a good indicator of how good is the app. Google wants to know which apps are likely to have good ratings as these apps will be boosted for visibility. The objective of this project is to build a model to predict which apps will have high ratings.
 
-Problem Statement:
-
-Google Play Store team is about to launch a new feature wherein, certain apps that are promising, are boosted in visibility. The boost will manifest in multiple ways including higher priority in recommendations sections (“Similar apps”, “You might also like”, “New and updated games”). These will also get a boost in search results visibility.  This feature will help bring more attention to newer apps that have the potential.
-
-Domain: General
-
-Analysis to be done: The problem is to identify the apps that are going to be good for Google to promote. App ratings, which are provided by the customers, is always a great indicator of the goodness of the app. The problem reduces to: predict which apps will have high ratings.
-
-Content: Dataset: Google Play Store data (“googleplaystore.csv”)
-
-Fields in the data –
+I had data of existing apps with more information about it such as :
 
 App: Application name
 
-Category: Category to which the app belongs 
+Category: Category to which the app belongs
 
 Rating: Overall user rating of the app
 
@@ -41,89 +30,49 @@ Current Ver: Current version of the app available on Play Store
 
 Android Ver: Minimum required Android version
 
- 
+# Steps performed in the analysis
 
-Steps performed:
+Importing libraries: Pandas, numpy, matplotlib.pyplot, Seaborn
 
-1.Load the data file using pandas.
-check how df looks like and other information.
+Importing Data: from csv
 
-2.Check for null values in the data. Get the number of null values for each column.
+Cleaning Data : treat null values, object dtype to numeric datatype, data conversion for MB to KB, remove unnecessary symbols
 
-3.Drop records with nulls in any of the columns. 
+Sanity Checks
 
-4.Variables seem to have incorrect type and inconsistent formatting. 
-Size column has sizes in Kb as well as Mb. 
-Extract the numeric value from the column
-Multiply the value by 1,000, if size is mentioned in Mb
+Outlier treatment
 
-Reviews is a numeric field that is loaded as a string field. Convert it to numeric (int/float).
+Exploratory Data Analysis: Univariate analysis, Bivariate analysis
 
-Installs field is currently stored as string and has values like 1,000,000+. 
-Treat 1,000,000+ as 1,000,000
-remove ‘+’, ‘,’ from the field, convert it to integer
+Data preprocessing: Apply log transformation to reduce the skew, convert cat columns to dummy columns (1,0)
 
-Price field is a string and has $ symbol. Remove ‘$’ sign, and convert it to numeric.
+Machine Learning using Linear Regression: Model building, Training the model, Predicting, Checking accuracy of the model, model improvement suggestions
 
-5. Sanity checks:
-Average rating should be between 1 and 5 as only these values are allowed on the play store. Drop the rows that have a value outside this range.
-Reviews should not be more than installs as only those who installed can review the app. If there are any such records, drop them.
-For free apps (type = “Free”), the price should not be >0. Drop any such rows.
+# Data Insights:
 
-Performing univariate analysis: 
-Boxplot for Price
+1. Maximum apps belong to Family Category and then Game Category
 
-Boxplot for Reviews
+2. Frequency of rating is distributed towards high rating
 
-Histogram for Rating
+3. Frequency of size is distributed towards small size
 
-Histogram for Size
+4. Rating seem to increase with the reviews
 
-6. Outlier treatment: 
-Price: From the box plot, it seems like there are some apps with very high price. A price of $200 for an application on the Play Store is very high and suspicious!
-Check out the records with very high price
-Drop these as most seem to be junk apps
+5. Rating seem to increase with the Size
 
-Reviews: Very few apps have very high number of reviews. These are all star apps that don’t help with the analysis and, in fact, will skew it. Drop records having more than 2 million reviews.
+6. A correlation between Rating and Installs is not observed
 
-Installs: There seems to be some outliers in this field too. Apps having very high number of installs should be dropped from the analysis.
-Find out the different percentiles – 10, 25, 50, 70, 90, 95, 99
-Decide a threshold as cutoff for outlier and drop records having values more than that
+7. Rating does not seem to increase that much with the Price
 
-7. Bivariate analysis: Let’s look at how the available predictors relate to the variable of interest, i.e., our target variable rating. Make scatter plots (for numeric features) and box plots (for character features) to assess the relations between rating and the other features.
+8. Content rating for Adults 18+ are liked better
 
-Make scatter plot/joinplot for Rating vs. Price
-Rating does not seem to increase with the price
+9. Events,Parenting,Art and Design genre have better ratings
 
-Make scatter plot/joinplot for Rating vs. Size
-Heavier apps are rated better
+10. Paid apps have slightly better rating
 
-Make scatter plot/joinplot for Rating vs. Reviews
-more reviews contribute to better rating in the mid range.
+11. I found that the R2 value was not very ideal in terms of a good prediction criteria.
 
-Make boxplot for Rating vs. Content Rating
-Content rating for Adults 18+ are liked better
+Something that could help me improve in this project would be increasing the model complexity.
 
-Make boxplot for Ratings vs. Category
-Events genre has better ratings
+Instead of linear model, I can try more advanced, machine learning models like a tree model or a neural network.
 
-8. Data preprocessing
-For the steps below, create a copy of the dataframe to make all the edits. Name it inp1.
-
-Reviews and Install have some values that are still relatively very high. Before building a linear regression model, you need to reduce the skew. Apply log transformation (np.log1p) to Reviews and Installs.
-
-Drop columns App, Last Updated, Current Ver, and Android Ver. These variables are not useful for our task.
-
-Get dummy columns for Category, Genres, and Content Rating. This needs to be done as the models do not understand categorical data, and all data should be numeric. Dummy encoding is one way to convert character fields to numeric. Name of dataframe should be inp2.
-
-9. Train test split  and apply 70-30 split. Name the new dataframes df_train and df_test.
-
-10. Separate the dataframes into X_train, y_train, X_test, and y_test.
-
-11 . Model building
-
-Use linear regression as the technique
-
-Report the R2 on the train set
-
-12. Make predictions on test set and report R2.
